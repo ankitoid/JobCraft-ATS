@@ -20,11 +20,12 @@ import {
   FileCheck,
   Loader2
 } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { ResumeData, ATSAnalysisResult, JobApplication } from '@/types';
 import { runATSAnalysis, resumeDataToText } from '@/lib/atsEngine';
 import { SAMPLE_JOB_DESCRIPTION, STRONG_ACTION_VERBS } from '@/lib/constants';
 import { extractTextFromFile } from '@/lib/pdfExtractor';
-
+import { ScannerProgressModal } from './SkeletonLoader';
 
 interface AtsMatcherProps {
   currentResume: ResumeData;
@@ -33,9 +34,30 @@ interface AtsMatcherProps {
   onLinkJobScore?: (jobId: string, score: number) => void;
   onNavigateToBuilder: () => void;
   onNavigateToTracker: () => void;
+  onNavigateToIntelligence?: () => void;
 }
 
+const NOMNI_JOB_DESCRIPTION = `Full-Stack Engineer - Nomni (Hospitality Tech)
+Join the revolution in hospitality tech! Nomni is the all-in-one platform built for hospitality operators - bringing POS, payments, ordering, loyalty, procurement, marketing, and data together in one system, with AI at its core. 35,000 venues already on the platform across Australia and Southeast Asia.
+
+About the role:
+Experienced Full-Stack Engineer who enjoys building products end to end and turning early ideas into practical, high-quality user experiences. Frontend-led with technical breadth across mobile applications, backend services, integrations, databases, and supporting infrastructure.
+
+What you'll do:
+- Build polished product experiences across web and mobile using React, React Native, Next.js, TypeScript, and JavaScript.
+- Develop supporting services and APIs using Node.js.
+- Work with Supabase, databases, REST APIs, and third-party integrations.
+- Take features from early concepts through implementation, testing, deployment, and production.
+- Use modern AI-assisted development workflows to improve delivery speed and productivity.
+- Build, integrate, and improve AI-enabled product capabilities.
+- Support AI evaluation, experimentation, observability, tracing, and debugging (Langfuse, Braintrust).
+- Proven experience building and releasing mobile applications on iOS & Android.`;
+
 const PRESET_JDS = [
+  {
+    title: '★ Nomni (Hospitality & AI)',
+    content: NOMNI_JOB_DESCRIPTION
+  },
   {
     title: 'Senior Full Stack (SaaS)',
     content: SAMPLE_JOB_DESCRIPTION
@@ -58,7 +80,7 @@ Responsibilities:
 - Manage PostgreSQL databases, Redis caching layers, and Kafka messaging pipelines.
 - Deploy scalable infrastructure on AWS using Docker, Kubernetes (k8s), and Terraform.
 - Monitor service health with Prometheus, Grafana, and Datadog.
-- Drive system reliability, fault tolerance, and API security (OAuth, JWT).`
+    Drive system reliability, fault tolerance, and API security (OAuth, JWT).`
   }
 ];
 
@@ -68,6 +90,7 @@ export const AtsMatcher: React.FC<AtsMatcherProps> = ({
   onUpdateResumeWithKeyword,
   onLinkJobScore,
   onNavigateToBuilder,
+  onNavigateToIntelligence,
 }) => {
   const [resumeMode, setResumeMode] = useState<'upload' | 'builder' | 'paste'>('upload');
   const [customResumeText, setCustomResumeText] = useState('');
@@ -75,10 +98,11 @@ export const AtsMatcher: React.FC<AtsMatcherProps> = ({
   const [extractedPdfText, setExtractedPdfText] = useState<string>('');
   const [isExtractingPdf, setIsExtractingPdf] = useState(false);
   const [pdfExtractError, setPdfExtractError] = useState<string | null>(null);
-  const [jobDescription, setJobDescription] = useState(SAMPLE_JOB_DESCRIPTION);
+  const [jobDescription, setJobDescription] = useState(NOMNI_JOB_DESCRIPTION);
+  const [isScanning, setIsScanning] = useState(false);
+  const [scanStep, setScanStep] = useState(0);
   const [analysis, setAnalysis] = useState<ATSAnalysisResult | null>(() => {
-    // Run initial analysis using sample data
-    return runATSAnalysis(resumeDataToText(currentResume), SAMPLE_JOB_DESCRIPTION);
+    return runATSAnalysis(resumeDataToText(currentResume), NOMNI_JOB_DESCRIPTION);
   });
   const [activeFilter, setActiveFilter] = useState<'all' | 'missing' | 'matched'>('all');
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
@@ -95,14 +119,26 @@ export const AtsMatcher: React.FC<AtsMatcherProps> = ({
       setExtractedPdfText(text);
       setUploadedFileName(file.name);
       if (jobDescription.trim()) {
-        const res = runATSAnalysis(text, jobDescription);
-        setAnalysis(res);
+        triggerScanningFlow(text, jobDescription);
       }
     } catch (err: any) {
       setPdfExtractError(err.message || 'Failed to extract text from file.');
     } finally {
       setIsExtractingPdf(false);
     }
+  };
+
+  const triggerScanningFlow = (resumeText: string, jdText: string) => {
+    setIsScanning(true);
+    setScanStep(0);
+    setTimeout(() => setScanStep(1), 300);
+    setTimeout(() => setScanStep(2), 650);
+    setTimeout(() => setScanStep(3), 1000);
+    setTimeout(() => {
+      const res = runATSAnalysis(resumeText, jdText);
+      setAnalysis(res);
+      setIsScanning(false);
+    }, 1300);
   };
 
   const handleRunAnalysis = () => {
@@ -126,8 +162,7 @@ export const AtsMatcher: React.FC<AtsMatcherProps> = ({
       return;
     }
 
-    const result = runATSAnalysis(resumeTextToAnalyze, jobDescription);
-    setAnalysis(result);
+    triggerScanningFlow(resumeTextToAnalyze, jobDescription);
   };
 
   const handleCopyBullet = (text: string, index: number) => {
@@ -152,6 +187,8 @@ export const AtsMatcher: React.FC<AtsMatcherProps> = ({
 
   return (
     <div className="space-y-8 pb-12">
+      {isScanning && <ScannerProgressModal currentStep={scanStep} />}
+
       {/* Hero Header */}
       <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-xl">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">

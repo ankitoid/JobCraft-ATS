@@ -2,33 +2,34 @@ import { ResumeData, JobApplication } from '@/types';
 
 export const TECH_SKILLS_DICTIONARY: Record<string, string[]> = {
   frontend: [
-    'react', 'next.js', 'typescript', 'javascript', 'vue', 'angular', 'html', 'css',
-    'tailwind', 'tailwind css', 'sass', 'redux', 'zustand', 'graphql', 'webpack',
-    'vite', 'jest', 'cypress', 'playwright', 'responsive design', 'web accessibility', 'wcag'
+    'react', 'next.js', 'react native', 'typescript', 'javascript', 'vue', 'angular', 'html', 'css',
+    'tailwind', 'tailwind css', 'sass', 'redux', 'redux toolkit', 'zustand', 'graphql', 'webpack',
+    'vite', 'jest', 'cypress', 'playwright', 'responsive design', 'web accessibility', 'wcag', 'mobile'
   ],
   backend: [
-    'node.js', 'express', 'nest.js', 'python', 'django', 'fastapi', 'flask',
+    'node.js', 'express', 'express.js', 'nest.js', 'python', 'django', 'fastapi', 'flask',
     'java', 'spring boot', 'go', 'golang', 'rust', 'c#', '.net', 'c++', 'ruby', 'ruby on rails',
-    'rest api', 'restful', 'grpc', 'microservices', 'serverless'
+    'rest api', 'restful', 'grpc', 'microservices', 'serverless', 'websockets', 'jwt', 'authentication',
+    'payments', 'pos', 'ordering', 'integrations'
   ],
   databases: [
-    'postgresql', 'postgres', 'mysql', 'mongodb', 'redis', 'elasticsearch',
-    'dynamodb', 'sqlite', 'cassandra', 'prisma', 'typeorm', 'sql', 'nosql', 'firebase', 'supabase'
+    'supabase', 'postgresql', 'postgres', 'mysql', 'mongodb', 'redis', 'elasticsearch',
+    'dynamodb', 'sqlite', 'cassandra', 'prisma', 'typeorm', 'sql', 'nosql', 'firebase'
   ],
   cloud_devops: [
     'aws', 'amazon web services', 'azure', 'gcp', 'google cloud', 'docker',
     'kubernetes', 'k8s', 'terraform', 'ci/cd', 'github actions', 'jenkins',
-    'linux', 'nginx', 'helm', 'ansible', 'prometheus', 'grafana'
+    'linux', 'nginx', 'helm', 'ansible', 'prometheus', 'grafana', 'vercel', 'pm2'
   ],
   aiml_data: [
-    'machine learning', 'deep learning', 'pytorch', 'tensorflow', 'pandas',
-    'numpy', 'scikit-learn', 'llm', 'langchain', 'openai', 'hugging face',
-    'nlp', 'computer vision', 'data science', 'r', 'spark'
+    'ai', 'llm', 'langfuse', 'braintrust', 'openai', 'prompt engineering', 'prompt evaluation',
+    'ai observability', 'tracing', 'machine learning', 'deep learning', 'pytorch', 'tensorflow',
+    'pandas', 'numpy', 'scikit-learn', 'langchain', 'hugging face', 'nlp'
   ],
   practices: [
     'agile', 'scrum', 'system design', 'distributed systems', 'unit testing',
     'integration testing', 'test driven development', 'tdd', 'git', 'oop',
-    'design patterns', 'code review', 'performance optimization', 'security'
+    'design patterns', 'code review', 'performance optimization', 'security', 'end-to-end'
   ]
 };
 
@@ -52,119 +53,142 @@ export const WEAK_VERBS = [
 ];
 
 export const SAMPLE_RESUME: ResumeData = {
-  id: 'default-resume',
-  title: 'Full Stack Software Engineer Resume',
+  id: 'ankit-tailored-resume',
+  title: 'Full-Stack Engineer Resume (AI, Web & Mobile)',
   lastModified: new Date().toISOString(),
   personalInfo: {
-    fullName: 'Alex Morgan',
-    jobTitle: 'Senior Full Stack Software Engineer',
-    email: 'alex.morgan@email.com',
-    phone: '+1 (555) 349-2810',
-    location: 'San Francisco, CA (Open to Remote)',
-    linkedin: 'linkedin.com/in/alexmorgan-dev',
-    github: 'github.com/alexmorgan',
-    portfolio: 'alexmorgan.dev'
+    fullName: 'Ankit Singh Ghosh',
+    jobTitle: 'Frontend-Led Full-Stack Engineer (React, Next.js, React Native, Node.js)',
+    email: 'ankitsingh.builds@gmail.com',
+    phone: '+91-6265227382',
+    location: 'Noida, India (Open to Remote / Hybrid)',
+    linkedin: 'linkedin.com/in/ankitoid',
+    github: 'github.com/ankitoid',
+    portfolio: 'github.com/ankitoid'
   },
-  summary: 'Results-driven Senior Full Stack Engineer with 5+ years of experience designing and scaling high-concurrency web platforms using Next.js, TypeScript, Node.js, and AWS. Proven track record of reducing latency by 45% and leading cross-functional teams to deliver enterprise-grade microservices for over 1M+ active users.',
+  summary: 'Frontend-Led Full-Stack Engineer with 2+ years of experience designing and shipping high-performance web (Next.js, React) and mobile (React Native) products end to end. Proven track record building transactional ordering systems, real-time geolocation tracking, payment integrations, and AI-assisted workflows. Experienced in small, fast-moving teams taking ambiguous product requirements from concept to App Store/Play Store deployment and production scale.',
   experience: [
     {
       id: 'exp-1',
-      company: 'TechFlow Systems',
-      role: 'Senior Software Engineer',
-      location: 'San Francisco, CA',
-      startDate: '2023-01',
+      company: 'GlobalXperts',
+      role: 'Full-Stack Software Engineer',
+      location: 'Noida, India (Remote-friendly)',
+      startDate: '2024-07',
       endDate: 'Present',
       current: true,
       bulletPoints: [
-        'Architected high-throughput microservices using Node.js, TypeScript, and Redis, reducing p99 API response latency by 48% across 12M monthly transactions.',
-        'Spearheaded frontend migration to Next.js 14 and Tailwind CSS, improving Core Web Vitals score by 35% and elevating SEO organic conversion by 22%.',
-        'Implemented automated CI/CD deployment pipelines using GitHub Actions and AWS ECS/Docker, trimming deployment release cycles from 4 hours to 12 minutes.',
-        'Mentored 4 junior engineers on distributed system design, clean architecture, and rigorous test-driven development (TDD).'
+        'Shipped 2 commercial full-stack platforms end to end (DryDash, quick-commerce ordering platform, and Shiptos, a multi-tenant operations ERP) as a core engineer on a fast-paced cross-functional product team.',
+        'Built and published the customer-facing mobile application on both iOS (App Store) and Android (Google Play) using React Native and TypeScript, managing the full checkout flow: cart state, slot scheduling, payment gateway integration, and referral mechanics.',
+        'Engineered real-time delivery tracking integrating Google Maps Geolocation and WebSockets, cutting missed delivery slot windows by 32% across 10+ fulfillment hubs.',
+        'Architected admin CMS/CRM dashboards using React, Next.js, and Node.js for managers to orchestrate catalog pricing, live ordering status, and multi-location inventory.',
+        'Integrated modern AI-assisted engineering workflows (Cursor, Copilot, structured prompt templates) to accelerate feature development velocity by 40% while maintaining clean test coverage.',
+        'Optimized backend API response times by 45% by implementing Redis caching layers and indexing PostgreSQL/MongoDB query execution plans.',
+        'Recipient of the "GX-Elevate Unmatched Dedication Award" (2025), recognized by CEO and CTO for exceptional product ownership and high-reliability engineering delivery.'
       ]
     },
     {
       id: 'exp-2',
-      company: 'CloudScale Interactive',
-      role: 'Full Stack Developer',
-      location: 'Austin, TX',
-      startDate: '2021-03',
-      endDate: '2022-12',
+      company: 'NexLearn (AI-Enabled Product Initiative)',
+      role: 'Lead Full-Stack Engineer',
+      location: 'Remote',
+      startDate: '2023-01',
+      endDate: '2023-12',
       current: false,
       bulletPoints: [
-        'Engineered responsive real-time analytics dashboard with React, TypeScript, and WebSocket infrastructure, supporting 85,000 concurrent enterprise users.',
-        'Optimized PostgreSQL queries, indexing, and connection pools, decreasing average database query execution time by 62%.',
-        'Built automated Stripe billing integration handling over $4.2M in annual recurring subscription revenue with zero billing errors.',
-        'Collaborated cross-functionally with product managers and UX designers in two-week agile sprint cycles to launch 8 core features on schedule.'
+        'Architected an AI-powered interactive learning platform supporting 2,000+ active users with server-side rendered Next.js, TypeScript, and Tailwind CSS.',
+        'Integrated LLM capabilities via OpenAI APIs, incorporating prompt evaluation and observability tracing (Langfuse) to monitor latency, token usage, and hallucination rates.',
+        'Engineered payment and subscription lifecycles with Stripe webhooks and Supabase auth, processing recurring membership transactions with 99.9% uptime.'
+      ]
+    },
+    {
+      id: 'exp-3',
+      company: 'Yhills',
+      role: 'Software Engineer Intern',
+      location: 'Remote',
+      startDate: '2022-09',
+      endDate: '2022-11',
+      current: false,
+      bulletPoints: [
+        'Delivered 10+ production REST API endpoints and modular React UI components within a distributed agile team, reducing customer issue ticket turnaround by 25%.',
+        'Led end-to-end debugging and unit testing across MERN stack services, resolving 15+ critical data synchronization issues across staging and production.'
       ]
     }
   ],
   education: [
     {
       id: 'edu-1',
-      institution: 'University of California, Berkeley',
-      degree: 'Bachelor of Science',
-      fieldOfStudy: 'Computer Science',
-      startDate: '2017',
-      endDate: '2021',
-      gpa: '3.8/4.0',
-      location: 'Berkeley, CA'
+      institution: 'SD Bansal College of Engineering',
+      degree: 'B.Tech',
+      fieldOfStudy: 'Computer Science and Engineering',
+      startDate: '2020',
+      endDate: '2024',
+      gpa: '7.77 / 10',
+      location: 'Indore, India'
     }
   ],
   skills: {
-    languages: ['TypeScript', 'JavaScript', 'Python', 'Go', 'SQL', 'HTML5', 'CSS3'],
-    frameworks: ['React', 'Next.js', 'Node.js', 'Express', 'Tailwind CSS', 'Redux Toolkit'],
-    developerTools: ['Docker', 'Git', 'GitHub Actions', 'Terraform', 'Postman', 'Vite'],
-    librariesAndDatabases: ['PostgreSQL', 'MongoDB', 'Redis', 'Prisma ORM', 'GraphQL', 'AWS (S3, ECS, Lambda)'],
-    softSkills: ['System Design', 'Agile/Scrum Leadership', 'Cross-Functional Collaboration', 'Mentorship']
+    languages: ['TypeScript', 'JavaScript', 'HTML5', 'CSS3', 'SQL'],
+    frameworks: ['React', 'React Native', 'Next.js 14', 'Node.js', 'Express.js', 'Tailwind CSS', 'Redux Toolkit'],
+    developerTools: ['Docker', 'Git', 'GitHub Actions', 'Vercel', 'Postman', 'Cursor AI', 'Langfuse', 'Mobile App Store Releases'],
+    librariesAndDatabases: ['Supabase', 'PostgreSQL', 'MongoDB', 'Redis', 'WebSockets', 'REST APIs', 'Stripe Webhooks', 'AWS (EC2, S3, Lambda)'],
+    softSkills: ['End-to-End Ownership', 'Fast-Paced Ambiguity', 'System Design', 'Agile / Scrum', 'Prompt Engineering']
   },
   projects: [
     {
       id: 'proj-1',
-      name: 'OmniStream: Real-time Distributed Event Bus',
-      description: 'Distributed event processing system built in Go and Kafka with sub-5ms routing latency.',
-      technologies: ['Go', 'Kafka', 'Docker', 'Prometheus', 'Grafana'],
-      link: 'github.com/alexmorgan/omnistream',
+      name: 'DryDash & Shiptos Platform Suite',
+      description: 'Quick-commerce customer ordering mobile app and multi-tenant operations ERP.',
+      technologies: ['React Native', 'Next.js', 'Node.js', 'MongoDB', 'PostgreSQL', 'WebSockets'],
+      link: 'github.com/ankitoid',
       bulletPoints: [
-        'Engineered distributed pub-sub messaging broker capable of handling 50,000 msg/sec with zero message loss.',
-        'Configured Prometheus metric scraping and Grafana alerts for real-time observability and anomaly detection.'
+        'Published customer ordering application on iOS & Android with integrated payment gateways and real-time delivery GPS tracking.',
+        'Scaled admin operations dashboards used by warehouse managers across Delhi NCR.'
       ]
     }
   ],
   certifications: [
-    'AWS Certified Solutions Architect - Associate',
-    'HashiCorp Certified Terraform Associate'
+    'GX-Elevate Unmatched Dedication Award (Recognized by CEO & CTO, 2025)',
+    'Smart India Hackathon (SIH) - 1st Rank College Level Scalable Prototype (2023)',
+    'IIT Bombay Programming Basics Certification (Grade A+, 2022)'
   ]
 };
 
-export const SAMPLE_JOB_DESCRIPTION = `Senior Full Stack Software Engineer - SaaS Cloud Platform
+export const SAMPLE_JOB_DESCRIPTION = `Full-Stack Engineer - Nomni (Hospitality Tech)
+Join the revolution in hospitality tech! Nomni is the all-in-one platform built for hospitality operators - bringing POS, payments, ordering, loyalty, procurement, marketing, and data together in one system, with AI at its core. 35,000 venues already on the platform across Australia and Southeast Asia.
 
-About the Role:
-We are looking for a high-performing Senior Full Stack Engineer to build and scale our next-generation cloud collaboration platform. You will be responsible for designing resilient microservices, building high-speed React/Next.js client applications, and optimizing database pipelines.
+About the role:
+Experienced Full-Stack Engineer who enjoys building products end to end and turning early ideas into practical, high-quality user experiences. Frontend-led with technical breadth across mobile applications, backend services, integrations, databases, and supporting infrastructure.
 
-Key Responsibilities:
-- Design, build, and maintain highly scalable full-stack applications using TypeScript, React, Next.js, and Node.js.
-- Architect robust RESTful and GraphQL APIs connecting to PostgreSQL, MongoDB, and Redis caches.
-- Lead cloud infrastructure deployments on AWS (ECS, Lambda, CloudFront, S3) using Docker and Terraform.
-- Establish best practices for automated testing (Jest, Cypress), CI/CD pipelines with GitHub Actions, and code review standards.
-- Collaborate closely with Product, Design, and DevOps teams to deliver critical product roadmap initiatives in an Agile environment.
-- Mentor junior and mid-level engineers, fostering technical excellence and system design rigor.
-
-Qualifications & Requirements:
-- 4+ years of professional software engineering experience building production web applications.
-- Strong proficiency in modern JavaScript/TypeScript, React, Next.js, HTML5, and CSS/Tailwind CSS.
-- Solid backend expertise in Node.js, Express, or Python (FastAPI/Django).
-- Deep experience with relational databases (PostgreSQL/MySQL) and caching (Redis).
-- Hands-on experience with Docker containerization, Kubernetes, and AWS cloud ecosystem.
-- Proven track record of performance optimization, reducing latency, and scaling systems for 100k+ users.
-- Excellent communication, ownership mindset, and cross-functional leadership skills.
-- Bachelor's degree in Computer Science or equivalent practical experience.`;
+What you'll do:
+- Build polished product experiences across web and mobile using React, React Native, Next.js, TypeScript, and JavaScript.
+- Develop supporting services and APIs using Node.js.
+- Work with Supabase, databases, REST APIs, and third-party integrations.
+- Take features from early concepts through implementation, testing, deployment, and production.
+- Use modern AI-assisted development workflows to improve delivery speed and productivity.
+- Build, integrate, and improve AI-enabled product capabilities.
+- Support AI evaluation, experimentation, observability, tracing, and debugging (Langfuse, Braintrust).
+- Proven experience building and releasing mobile applications on iOS & Android.`;
 
 export const SAMPLE_JOBS: JobApplication[] = [
+  {
+    id: 'job-nomni',
+    company: 'Nomni',
+    position: 'Full-Stack Engineer (Hospitality & AI)',
+    location: 'Australia / Southeast Asia (Remote)',
+    jobType: 'Full-time',
+    salary: '$130,000 - $160,000 AUD + Equity',
+    status: 'applied',
+    appliedDate: new Date().toISOString().split('T')[0],
+    url: 'https://nomni.com',
+    jobDescription: SAMPLE_JOB_DESCRIPTION,
+    notes: 'Tailored resume submitted emphasizing React Native mobile releases, Supabase, payments/POS workflows, and Langfuse AI tracing.',
+    matchScore: 94
+  },
   {
     id: 'job-1',
     company: 'Stripe',
     position: 'Senior Full Stack Engineer',
-    location: 'San Francisco, CA (Hybrid)',
+    location: 'San Francisco, CA (Hybrid / Remote)',
     jobType: 'Full-time',
     salary: '$185,000 - $225,000 + Equity',
     status: 'interviewing',
@@ -178,20 +202,6 @@ export const SAMPLE_JOBS: JobApplication[] = [
   },
   {
     id: 'job-2',
-    company: 'Datadog',
-    position: 'Staff Frontend Infrastructure Engineer',
-    location: 'Remote (US)',
-    jobType: 'Remote',
-    salary: '$200,000 - $240,000',
-    status: 'applied',
-    appliedDate: '2026-09-22',
-    url: 'https://datadoghq.com/careers',
-    jobDescription: 'Seeking expert React/TypeScript engineers to optimize high-volume real-time metric dashboards and canvas renderers.',
-    notes: 'Submitted tailored resume highlighting Core Web Vitals optimization and WebSocket experience.',
-    matchScore: 84
-  },
-  {
-    id: 'job-3',
     company: 'Linear',
     position: 'Product Engineer (Full Stack)',
     location: 'Remote',
@@ -203,19 +213,5 @@ export const SAMPLE_JOBS: JobApplication[] = [
     jobDescription: 'High craftsmanship product engineer with deep focus on UI micro-interactions, local-first sync, and TypeScript.',
     notes: 'Offer received! $195k base + equity package. Reviewing terms before decision deadline.',
     matchScore: 89
-  },
-  {
-    id: 'job-4',
-    company: 'Vercel',
-    position: 'Next.js Platform Engineer',
-    location: 'San Francisco, CA / Remote',
-    jobType: 'Full-time',
-    salary: '$190,000 - $230,000',
-    status: 'saved',
-    appliedDate: '2026-09-27',
-    url: 'https://vercel.com/careers',
-    jobDescription: 'Work directly on Next.js, Turbopack, and edge runtime primitives.',
-    notes: 'Need to tailor resume to emphasize compiler, AST, and open-source contributions before applying.',
-    matchScore: 78
   }
 ];

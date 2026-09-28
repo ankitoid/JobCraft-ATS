@@ -1,11 +1,15 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Header } from '@/components/Header';
 import { AtsMatcher } from '@/components/AtsMatcher';
 import { ResumeBuilder } from '@/components/ResumeBuilder';
 import { JobTracker } from '@/components/JobTracker';
 import { BulletPolisher } from '@/components/BulletPolisher';
+import { JdIntelligence } from '@/components/JdIntelligence';
+import { CommandPalette } from '@/components/CommandPalette';
+import { SmoothScroll } from '@/components/SmoothScroll';
 import { ResumeData, JobApplication } from '@/types';
 import {
   loadSavedResume,
@@ -15,13 +19,14 @@ import {
   exportAllData,
   importAllData
 } from '@/lib/storage';
-import { SAMPLE_RESUME, SAMPLE_JOBS } from '@/lib/constants';
+import { SAMPLE_RESUME, SAMPLE_JOBS, SAMPLE_JOB_DESCRIPTION } from '@/lib/constants';
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState<'ats' | 'builder' | 'tracker' | 'polisher'>('ats');
+  const [activeTab, setActiveTab] = useState<'ats' | 'builder' | 'tracker' | 'polisher' | 'intelligence'>('ats');
   const [resume, setResume] = useState<ResumeData>(SAMPLE_RESUME);
   const [jobs, setJobs] = useState<JobApplication[]>(SAMPLE_JOBS);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   // Load persisted data on client mount
   useEffect(() => {
@@ -30,6 +35,18 @@ export default function Home() {
     setResume(loadedResume);
     setJobs(loadedJobs);
     setIsLoaded(true);
+  }, []);
+
+  // Global Keyboard shortcut listener for Cmd+K / Ctrl+K
+  useEffect(() => {
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsSearchOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleGlobalKeyDown);
+    return () => window.removeEventListener('keydown', handleGlobalKeyDown);
   }, []);
 
   // Update resume and persist
@@ -101,66 +118,106 @@ export default function Home() {
     input.click();
   };
 
+  const handlePrintResume = () => {
+    setActiveTab('builder');
+    setTimeout(() => {
+      window.print();
+    }, 300);
+  };
+
   if (!isLoaded) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-950 text-slate-400">
         <div className="flex items-center space-x-2">
           <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
-          <span>Loading JobCraft workspace...</span>
+          <span>Initializing JobCraft workspace...</span>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
-      <Header
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        onExportData={handleExportData}
-        onImportData={handleImportData}
-      />
+    <SmoothScroll>
+      <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-blue-600 selection:text-white">
+        <Header
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          onOpenSearch={() => setIsSearchOpen(true)}
+          onExportData={handleExportData}
+          onImportData={handleImportData}
+        />
 
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        {activeTab === 'ats' && (
-          <AtsMatcher
-            currentResume={resume}
-            jobs={jobs}
-            onUpdateResumeWithKeyword={handleAddKeywordToResume}
-            onLinkJobScore={handleLinkJobScore}
-            onNavigateToBuilder={() => setActiveTab('builder')}
-            onNavigateToTracker={() => setActiveTab('tracker')}
-          />
-        )}
+        <CommandPalette
+          isOpen={isSearchOpen}
+          onClose={() => setIsSearchOpen(false)}
+          onNavigate={(tab) => setActiveTab(tab)}
+          onTriggerScan={() => setActiveTab('ats')}
+          onPrintResume={handlePrintResume}
+        />
 
-        {activeTab === 'builder' && (
-          <ResumeBuilder
-            resume={resume}
-            onSaveResume={handleUpdateResume}
-            onNavigateToAts={() => setActiveTab('ats')}
-          />
-        )}
+        <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.18, ease: 'easeOut' }}
+            >
+              {activeTab === 'ats' && (
+                <AtsMatcher
+                  currentResume={resume}
+                  jobs={jobs}
+                  onUpdateResumeWithKeyword={handleAddKeywordToResume}
+                  onLinkJobScore={handleLinkJobScore}
+                  onNavigateToBuilder={() => setActiveTab('builder')}
+                  onNavigateToTracker={() => setActiveTab('tracker')}
+                  onNavigateToIntelligence={() => setActiveTab('intelligence')}
+                />
+              )}
 
-        {activeTab === 'tracker' && (
-          <JobTracker
-            jobs={jobs}
-            onUpdateJobs={handleUpdateJobs}
-            onSelectJobForATS={handleSelectJobForATS}
-          />
-        )}
+              {activeTab === 'intelligence' && (
+                <JdIntelligence
+                  jobDescription={SAMPLE_JOB_DESCRIPTION}
+                  resume={resume}
+                  onNavigateToBuilder={() => setActiveTab('builder')}
+                />
+              )}
 
-        {activeTab === 'polisher' && (
-          <BulletPolisher
-            onNavigateToBuilder={() => setActiveTab('builder')}
-          />
-        )}
-      </main>
+              {activeTab === 'builder' && (
+                <ResumeBuilder
+                  resume={resume}
+                  onSaveResume={handleUpdateResume}
+                  onNavigateToAts={() => setActiveTab('ats')}
+                />
+              )}
 
-      <footer className="border-t border-slate-900 bg-slate-950 py-6 text-center text-xs text-slate-500 print:hidden">
-        <div className="max-w-7xl mx-auto px-4">
-          JobCraft • Next-Gen ATS Resume Optimizer & Job Tracker • High-Pass Recruiter Screening
-        </div>
-      </footer>
-    </div>
+              {activeTab === 'tracker' && (
+                <JobTracker
+                  jobs={jobs}
+                  onUpdateJobs={handleUpdateJobs}
+                  onSelectJobForATS={handleSelectJobForATS}
+                />
+              )}
+
+              {activeTab === 'polisher' && (
+                <BulletPolisher
+                  onNavigateToBuilder={() => setActiveTab('builder')}
+                />
+              )}
+            </motion.div>
+          </AnimatePresence>
+        </main>
+
+        <footer className="border-t border-slate-900 bg-slate-950 py-6 text-center text-xs text-slate-500 print:hidden">
+          <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+            <span>JobCraft • AI ATS Resume Optimizer & Career Command Center</span>
+            <span className="text-[11px] text-slate-600">
+              Press <kbd className="px-1 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-400">⌘K</kbd> to search anywhere
+            </span>
+          </div>
+        </footer>
+      </div>
+    </SmoothScroll>
   );
 }
