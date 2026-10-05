@@ -23,7 +23,7 @@ import { SAMPLE_RESUME, SAMPLE_JOBS, SAMPLE_JOB_DESCRIPTION } from '@/lib/consta
 import { Hero } from '@/components/Hero';
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState<'ats' | 'builder' | 'tracker' | 'polisher' | 'intelligence'>('ats');
+  const [activeTab, setActiveTab] = useState<'ats' | 'builder' | 'intelligence'>('ats');
   const [showLanding, setShowLanding] = useState(true);
   const [resume, setResume] = useState<ResumeData>(SAMPLE_RESUME);
   const [jobs, setJobs] = useState<JobApplication[]>(SAMPLE_JOBS);
@@ -139,24 +139,84 @@ export default function Home() {
   }
 
   return (
-    <SmoothScroll>
-      <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-blue-600 selection:text-white">
-        <Header
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-          onOpenSearch={() => setIsSearchOpen(true)}
-          onExportData={handleExportData}
-          onImportData={handleImportData}
-        />
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-blue-600 selection:text-white print:bg-white print:text-black">
+      <Header
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        onOpenSearch={() => setIsSearchOpen(true)}
+        onExportData={handleExportData}
+        onImportData={handleImportData}
+      />
 
-        <CommandPalette
-          isOpen={isSearchOpen}
-          onClose={() => setIsSearchOpen(false)}
-          onNavigate={(tab) => setActiveTab(tab)}
-          onTriggerScan={() => setActiveTab('ats')}
-          onPrintResume={handlePrintResume}
-        />
+      {/* Hero Landing */}
+      {showLanding ? (
+        <motion.div
+          key="hero"
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.2, ease: 'easeOut' }}
+          className="flex-1 flex flex-col"
+        >
+          <div className="flex-1 flex flex-col items-center justify-center min-h-[80vh]">
+            <Hero
+              onCheckResume={() => {
+                setActiveTab('ats');
+                setShowLanding(false);
+              }}
+              onAnalyzeJob={() => {
+                setActiveTab('intelligence');
+                setShowLanding(false);
+              }}
+            />
+          </div>
+          
+          {/* Features Section to enable scrolling */}
+          <div className="max-w-6xl mx-auto px-4 py-24 space-y-32">
+            <div className="grid md:grid-cols-2 gap-12 items-center">
+              <div className="space-y-6">
+                <div className="w-12 h-12 bg-blue-500/10 rounded-2xl flex items-center justify-center border border-blue-500/20">
+                  <span className="text-2xl">🎯</span>
+                </div>
+                <h2 className="text-3xl font-bold text-white">Beat the ATS with Precision</h2>
+                <p className="text-slate-400 text-lg leading-relaxed">
+                  Most resumes are rejected before a human ever sees them. JobCraft simulates exactly how Applicant Tracking Systems parse your PDF, revealing the hidden gaps in your profile.
+                </p>
+              </div>
+              <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl aspect-square sm:aspect-[4/3] flex items-center justify-center overflow-hidden relative">
+                 <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/5 to-transparent pointer-events-none" />
+                 <div className="space-y-4 w-full">
+                    <div className="h-4 bg-slate-800 rounded-full w-3/4 animate-pulse" />
+                    <div className="h-4 bg-slate-800 rounded-full w-full animate-pulse delay-75" />
+                    <div className="h-4 bg-blue-500/40 rounded-full w-5/6 animate-pulse delay-150" />
+                    <div className="h-4 bg-slate-800 rounded-full w-2/3 animate-pulse delay-300" />
+                 </div>
+              </div>
+            </div>
 
+            <div className="grid md:grid-cols-2 gap-12 items-center">
+              <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl aspect-square sm:aspect-[4/3] flex items-center justify-center overflow-hidden relative order-last md:order-first">
+                 <div className="absolute inset-0 bg-gradient-to-tl from-indigo-500/5 to-transparent pointer-events-none" />
+                 <div className="grid grid-cols-2 gap-4 w-full">
+                    <div className="bg-slate-800/50 border border-slate-700 h-24 rounded-2xl flex items-center justify-center"><span className="text-indigo-400 font-mono text-sm">React</span></div>
+                    <div className="bg-emerald-500/10 border border-emerald-500/30 h-24 rounded-2xl flex items-center justify-center"><span className="text-emerald-400 font-mono text-sm">Next.js</span></div>
+                    <div className="bg-slate-800/50 border border-slate-700 h-24 rounded-2xl flex items-center justify-center"><span className="text-indigo-400 font-mono text-sm">TypeScript</span></div>
+                    <div className="bg-rose-500/10 border border-rose-500/30 h-24 rounded-2xl flex items-center justify-center"><span className="text-rose-400 font-mono text-sm">Missing</span></div>
+                 </div>
+              </div>
+              <div className="space-y-6">
+                <div className="w-12 h-12 bg-indigo-500/10 rounded-2xl flex items-center justify-center border border-indigo-500/20">
+                  <span className="text-2xl">✨</span>
+                </div>
+                <h2 className="text-3xl font-bold text-white">Identify Missing Keywords</h2>
+                <p className="text-slate-400 text-lg leading-relaxed">
+                  We cross-reference your resume against the target job description to highlight exactly which hard skills, soft skills, and tools you're missing — so you can add them before applying.
+                </p>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      ) : (
         <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
           <AnimatePresence mode="wait">
             <motion.div
@@ -169,11 +229,8 @@ export default function Home() {
               {activeTab === 'ats' && (
                 <AtsMatcher
                   currentResume={resume}
-                  jobs={jobs}
                   onUpdateResumeWithKeyword={handleAddKeywordToResume}
-                  onLinkJobScore={handleLinkJobScore}
                   onNavigateToBuilder={() => setActiveTab('builder')}
-                  onNavigateToTracker={() => setActiveTab('tracker')}
                   onNavigateToIntelligence={() => setActiveTab('intelligence')}
                 />
               )}
@@ -194,32 +251,19 @@ export default function Home() {
                 />
               )}
 
-              {activeTab === 'tracker' && (
-                <JobTracker
-                  jobs={jobs}
-                  onUpdateJobs={handleUpdateJobs}
-                  onSelectJobForATS={handleSelectJobForATS}
-                />
-              )}
-
-              {activeTab === 'polisher' && (
-                <BulletPolisher
-                  onNavigateToBuilder={() => setActiveTab('builder')}
-                />
-              )}
             </motion.div>
           </AnimatePresence>
         </main>
+      )}
 
-        <footer className="border-t border-slate-900 bg-slate-950 py-6 text-center text-xs text-slate-500 print:hidden">
-          <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-            <span>JobCraft • AI ATS Resume Optimizer & Career Command Center</span>
-            <span className="text-[11px] text-slate-600">
-              Press <kbd className="px-1 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-400">⌘K</kbd> to search anywhere
-            </span>
-          </div>
-        </footer>
-      </div>
-    </SmoothScroll>
+      <footer className="border-t border-slate-900 bg-slate-950 py-6 text-center text-xs text-slate-500 print:hidden">
+        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+          <span>JobCraft • AI ATS Resume Optimizer & Career Command Center</span>
+          <span className="text-[11px] text-slate-600">
+            Press <kbd className="px-1 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-400">⌘K</kbd> to search anywhere
+          </span>
+        </div>
+      </footer>
+    </div>
   );
 }

@@ -22,73 +22,24 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { ResumeData, ATSAnalysisResult, JobApplication } from '@/types';
+import { ATSScoreCard } from '@/components/ATSScoreCard';
+import { ResumeSummaryCard } from '@/components/ResumeSummaryCard';
+import { ParsedResumePreview } from '@/components/ParsedResumePreview';
 import { runATSAnalysis, resumeDataToText } from '@/lib/atsEngine';
-import { SAMPLE_JOB_DESCRIPTION, STRONG_ACTION_VERBS } from '@/lib/constants';
+  import { SAMPLE_JOB_DESCRIPTION, STRONG_ACTION_VERBS } from '@/lib/constants';
 import { extractTextFromFile } from '@/lib/pdfExtractor';
 import { ScannerProgressModal } from './SkeletonLoader';
 
 interface AtsMatcherProps {
   currentResume: ResumeData;
-  jobs: JobApplication[];
   onUpdateResumeWithKeyword?: (keyword: string) => void;
-  onLinkJobScore?: (jobId: string, score: number) => void;
   onNavigateToBuilder: () => void;
-  onNavigateToTracker: () => void;
   onNavigateToIntelligence?: () => void;
 }
 
-const NOMNI_JOB_DESCRIPTION = `Full-Stack Engineer - Nomni (Hospitality Tech)
-Join the revolution in hospitality tech! Nomni is the all-in-one platform built for hospitality operators - bringing POS, payments, ordering, loyalty, procurement, marketing, and data together in one system, with AI at its core. 35,000 venues already on the platform across Australia and Southeast Asia.
-
-About the role:
-Experienced Full-Stack Engineer who enjoys building products end to end and turning early ideas into practical, high-quality user experiences. Frontend-led with technical breadth across mobile applications, backend services, integrations, databases, and supporting infrastructure.
-
-What you'll do:
-- Build polished product experiences across web and mobile using React, React Native, Next.js, TypeScript, and JavaScript.
-- Develop supporting services and APIs using Node.js.
-- Work with Supabase, databases, REST APIs, and third-party integrations.
-- Take features from early concepts through implementation, testing, deployment, and production.
-- Use modern AI-assisted development workflows to improve delivery speed and productivity.
-- Build, integrate, and improve AI-enabled product capabilities.
-- Support AI evaluation, experimentation, observability, tracing, and debugging (Langfuse, Braintrust).
-- Proven experience building and releasing mobile applications on iOS & Android.`;
-
-const PRESET_JDS = [
-  {
-    title: '★ Nomni (Hospitality & AI)',
-    content: NOMNI_JOB_DESCRIPTION
-  },
-  {
-    title: 'Senior Full Stack (SaaS)',
-    content: SAMPLE_JOB_DESCRIPTION
-  },
-  {
-    title: 'Frontend / Next.js Engineer',
-    content: `Frontend Engineer - Next.js & React Platform
-Requirements:
-- 3+ years experience with React, Next.js, TypeScript, and modern CSS/Tailwind.
-- Proven expertise in Web Performance Optimization, Core Web Vitals, and WCAG accessibility.
-- Experience with state management (Zustand, Redux) and GraphQL/REST API integration.
-- Unit testing with Jest, Playwright, or Cypress.
-- Collaborative mindset, agile scrum, and strong code review ownership.`
-  },
-  {
-    title: 'Backend Cloud & Distributed Systems',
-    content: `Senior Backend Engineer - Distributed Systems
-Responsibilities:
-- Architect high-throughput backend services using Go, Node.js, or Python.
-- Manage PostgreSQL databases, Redis caching layers, and Kafka messaging pipelines.
-- Deploy scalable infrastructure on AWS using Docker, Kubernetes (k8s), and Terraform.
-- Monitor service health with Prometheus, Grafana, and Datadog.
-    Drive system reliability, fault tolerance, and API security (OAuth, JWT).`
-  }
-];
-
 export const AtsMatcher: React.FC<AtsMatcherProps> = ({
   currentResume,
-  jobs,
   onUpdateResumeWithKeyword,
-  onLinkJobScore,
   onNavigateToBuilder,
   onNavigateToIntelligence,
 }) => {
@@ -98,15 +49,13 @@ export const AtsMatcher: React.FC<AtsMatcherProps> = ({
   const [extractedPdfText, setExtractedPdfText] = useState<string>('');
   const [isExtractingPdf, setIsExtractingPdf] = useState(false);
   const [pdfExtractError, setPdfExtractError] = useState<string | null>(null);
-  const [jobDescription, setJobDescription] = useState(NOMNI_JOB_DESCRIPTION);
+  const [jobDescription, setJobDescription] = useState(SAMPLE_JOB_DESCRIPTION);
   const [isScanning, setIsScanning] = useState(false);
   const [scanStep, setScanStep] = useState(0);
-  const [analysis, setAnalysis] = useState<ATSAnalysisResult | null>(() => {
-    return runATSAnalysis(resumeDataToText(currentResume), NOMNI_JOB_DESCRIPTION);
-  });
+  const [analysis, setAnalysis] = useState<ATSAnalysisResult | null>(null);
   const [activeFilter, setActiveFilter] = useState<'all' | 'missing' | 'matched'>('all');
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
-  const [selectedJobId, setSelectedJobId] = useState<string>('');
+  const resume = currentResume;
 
   const handleFileUpload = async (file: File) => {
     setIsExtractingPdf(true);
@@ -171,11 +120,6 @@ export const AtsMatcher: React.FC<AtsMatcherProps> = ({
     setTimeout(() => setCopiedIndex(null), 2000);
   };
 
-  const handleSaveToJob = () => {
-    if (!selectedJobId || !analysis || !onLinkJobScore) return;
-    onLinkJobScore(selectedJobId, analysis.overallScore);
-    alert('Match score linked to job application successfully!');
-  };
 
   const filteredKeywords = analysis
     ? activeFilter === 'all'
@@ -423,20 +367,7 @@ export const AtsMatcher: React.FC<AtsMatcherProps> = ({
               </div>
             </div>
 
-            {/* Presets */}
-            <div className="flex items-center space-x-2 text-xs overflow-x-auto pb-1">
-              <span className="text-slate-400 shrink-0">Sample JDs:</span>
-              {PRESET_JDS.map((preset) => (
-                <button
-                  key={preset.title}
-                  type="button"
-                  onClick={() => setJobDescription(preset.content)}
-                  className="px-2.5 py-1 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium shrink-0 transition"
-                >
-                  {preset.title}
-                </button>
-              ))}
-            </div>
+
 
             <textarea
               value={jobDescription}
@@ -464,7 +395,12 @@ export const AtsMatcher: React.FC<AtsMatcherProps> = ({
       {analysis && (
         <div className="space-y-8 animate-fadeIn">
           {/* Main Scorecard Overview */}
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                      {/* Summary Card */}
+            <ResumeSummaryCard resume={resume} />
+            {/* Premium ATS Score Card */}
+            <ATSScoreCard analysis={analysis} />
+            {/* Parsed Resume Preview */}
+            <ParsedResumePreview resume={resume} analysis={analysis} />
             <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col justify-between">
               <div className="text-xs text-slate-400 uppercase font-semibold">Keywords Match</div>
               <div className="flex items-baseline space-x-2 mt-2">
@@ -534,41 +470,7 @@ export const AtsMatcher: React.FC<AtsMatcherProps> = ({
                 />
               </div>
             </div>
-          </div>
-
-          {/* Link score to Job Tracker */}
-          {jobs.length > 0 && onLinkJobScore && (
-            <div className="bg-slate-900/60 border border-slate-800 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div className="flex items-center space-x-2">
-                <Award className="w-5 h-5 text-amber-400" />
-                <span className="text-sm font-medium text-slate-200">
-                  Save this {analysis.overallScore}% score to your Job Tracker:
-                </span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <select
-                  value={selectedJobId}
-                  onChange={(e) => setSelectedJobId(e.target.value)}
-                  className="bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                >
-                  <option value="">Select an active job application...</option>
-                  {jobs.map((j) => (
-                    <option key={j.id} value={j.id}>
-                      {j.company} - {j.position}
-                    </option>
-                  ))}
-                </select>
-                <button
-                  type="button"
-                  onClick={handleSaveToJob}
-                  disabled={!selectedJobId}
-                  className="px-3 py-1.5 bg-blue-600 disabled:opacity-50 hover:bg-blue-500 text-white rounded-lg text-xs font-semibold transition"
-                >
-                  Save Score
-                </button>
-              </div>
-            </div>
-          )}
+          
 
           {/* Keywords Match Matrix */}
           <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6">

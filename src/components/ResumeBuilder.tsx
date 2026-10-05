@@ -58,7 +58,10 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({
   };
 
   const handlePrint = () => {
-    window.print();
+    setActiveTab('preview');
+    setTimeout(() => {
+      window.print();
+    }, 100);
   };
 
   // Work Experience Helpers
@@ -199,7 +202,7 @@ export const ResumeBuilder: React.FC<ResumeBuilderProps> = ({
 
       {/* Editor View */}
       {activeTab === 'edit' && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 print:hidden">
           {/* Main Edit Column */}
           <div className="lg:col-span-2 space-y-6">
             {/* Personal Info */}

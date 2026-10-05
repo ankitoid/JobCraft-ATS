@@ -3,8 +3,8 @@ import React from 'react';
 import { Target, FileText, Briefcase, Sparkles, Download, Upload, Compass, Command, Search } from 'lucide-react';
 
 interface HeaderProps {
-  activeTab: 'ats' | 'builder' | 'tracker' | 'polisher' | 'intelligence';
-  setActiveTab: (tab: 'ats' | 'builder' | 'tracker' | 'polisher' | 'intelligence') => void;
+  activeTab: 'ats' | 'builder' | 'intelligence';
+  setActiveTab: (tab: 'ats' | 'builder' | 'intelligence') => void;
   onOpenSearch: () => void;
   onExportData: () => void;
   onImportData: () => void;
@@ -18,7 +18,7 @@ export const Header: React.FC<HeaderProps> = ({
   onImportData,
 }) => {
   return (
-    <header className="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800">
+    <header className="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 print:hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo / Brand */}
@@ -77,29 +77,6 @@ export const Header: React.FC<HeaderProps> = ({
               <span>Resume Builder</span>
             </button>
 
-            <button
-              onClick={() => setActiveTab('tracker')}
-              className={`flex items-center space-x-2 px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all shrink-0 ${
-                activeTab === 'tracker'
-                  ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-800'
-              }`}
-            >
-              <Briefcase className="w-4 h-4" />
-              <span>Job Tracker</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('polisher')}
-              className={`flex items-center space-x-2 px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all shrink-0 ${
-                activeTab === 'polisher'
-                  ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-800'
-              }`}
-            >
-              <Sparkles className="w-4 h-4" />
-              <span>Bullet Polisher</span>
-            </button>
           </nav>
 
           {/* Search Trigger & Actions */}

@@ -18,10 +18,11 @@ export async function extractTextFromFile(file: File): Promise<string> {
   if (fileType === 'application/pdf' || fileName.endsWith('.pdf')) {
     try {
       const arrayBuffer = await file.arrayBuffer();
-      // Dynamically load pdfjs-dist in client
-      const pdfjs = await import('pdfjs-dist');
+      // Use standard import from mjs build
+      // @ts-ignore: Next.js / TypeScript doesn't have types for the minified mjs build directly
+      const pdfjs = await import('pdfjs-dist/build/pdf.min.mjs');
       if (typeof window !== 'undefined') {
-        pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
+        pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
       }
 
       const loadingTask = pdfjs.getDocument({
@@ -44,7 +45,7 @@ export async function extractTextFromFile(file: File): Promise<string> {
       return extractedPages.join('\n\n').trim();
     } catch (err) {
       console.error('Error parsing PDF file:', err);
-      throw new Error('Failed to parse PDF text. Please ensure the file is not password-protected or corrupted.');
+      throw new Error(`Failed to parse PDF text: ${err instanceof Error ? err.message : String(err)}. Please ensure the file is not password-protected or corrupted.`);
     }
   }
 
