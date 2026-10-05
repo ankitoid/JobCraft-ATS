@@ -35,7 +35,7 @@ export const Header: React.FC<HeaderProps> = ({
                   ATS Pro
                 </span>
               </div>
-              <p className="text-xs text-slate-400 hidden sm:block">AI Resume Optimizer & Job Tracker</p>
+              {/* <p className="text-xs text-slate-400 hidden sm:block">AI Resume Optimizer & Job Tracker</p> */}
             </div>
           </div>
 

@@ -20,9 +20,11 @@ import {
   importAllData
 } from '@/lib/storage';
 import { SAMPLE_RESUME, SAMPLE_JOBS, SAMPLE_JOB_DESCRIPTION } from '@/lib/constants';
+import { Hero } from '@/components/Hero';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<'ats' | 'builder' | 'tracker' | 'polisher' | 'intelligence'>('ats');
+  const [showLanding, setShowLanding] = useState(true);
   const [resume, setResume] = useState<ResumeData>(SAMPLE_RESUME);
   const [jobs, setJobs] = useState<JobApplication[]>(SAMPLE_JOBS);
   const [isLoaded, setIsLoaded] = useState(false);
